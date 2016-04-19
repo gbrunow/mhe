@@ -36,11 +36,12 @@ for i = 1:(length(horizontalCrops))
 %         boundaries(i,:) = [bmin, bmax];
         
         map = he(crop,h);
+%         map = h;
         
         bHmin = min(map);
         bHmax = max(map);
         remapFactor = (bmax - bmin)/(bHmax - bHmin);   
-        map = map * remapFactor;
+        map = (map - bHmin) * remapFactor + bmin;
         
         inbound = map >= bmin & map <= bmax;
 %         map(~inbound) = 0;
