@@ -4,11 +4,13 @@ img = imread('Cameraman256.png');
 
 subplot(2,3,1);
 imshow(img);
+title('Original');
 
 subplot(2,3,2);
 map = he(img);
 img2 = applyMap(img, map);
 imshow(img2);
+title('HE');
 
 frameHeight = 32;
 frameWidth = 32;
@@ -53,7 +55,8 @@ for i = 1:(length(horizontalCrops))
         k = k + 1;
     end
 end
-    
+
+newMapNum(newMapNum == 0) = 1;
 map = round(newMapDen./newMapNum);
 % map(isnan(map)) = 0;
 img3 = applyMap(img,map);
@@ -61,6 +64,7 @@ img3 = applyMap(img,map);
     
 subplot(2,3,3);
 imshow(img3);
+title('MHE');
 
 subplot(2,3,4)
 imhist(img);
@@ -79,3 +83,5 @@ imhist(img3);
 % end
 
 % hold off;
+
+shg;
