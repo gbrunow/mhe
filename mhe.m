@@ -26,7 +26,7 @@ crops = cell(length(horizontalCrops), length(verticalCrops));
 maps = zeros(L, length(horizontalCrops)*length(verticalCrops));
 newMapDen = zeros(L,1);
 newMapNum = zeros(L,1);
-% boundaries = zeros(L,2);
+
 k = 1;
 for i = 1:(length(horizontalCrops))
     for j = 1:(length(verticalCrops))
@@ -35,18 +35,16 @@ for i = 1:(length(horizontalCrops))
         h = imhist(crop);        
         bmin = min(h);
         bmax = max(h);
-%         boundaries(i,:) = [bmin, bmax];
         
         map = he(crop,h);
-%         map = h;
         
         bHmin = min(map);
         bHmax = max(map);
-        remapFactor = (bmax - bmin)/(bHmax - bHmin);   
+        remapFactor = (bmax - bmin)/(bHmax - bHmin); 
+        
         map = (map - bHmin) * remapFactor + bmin;
         
         inbound = map >= bmin & map <= bmax;
-%         map(~inbound) = 0;
         newMapDen(inbound) = newMapDen(inbound) + map(inbound);
         newMapNum(inbound) = newMapNum(inbound) + 1;
         
@@ -58,7 +56,6 @@ end
 
 newMapNum(newMapNum == 0) = 1;
 map = round(newMapDen./newMapNum);
-% map(isnan(map)) = 0;
 img3 = applyMap(img,map);
 
     
