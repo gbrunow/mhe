@@ -26,8 +26,9 @@ L = length(initialHistogram);
 
 crops = cell(length(horizontalCrops), length(verticalCrops));
 maps = zeros(L, length(horizontalCrops)*length(verticalCrops));
-newMapDen = zeros(L,1);
 newMapNum = zeros(L,1);
+newMapDen = zeros(L,1);
+levels = 1:L;
 
 k = 1;
 for i = 1:(length(horizontalCrops))
@@ -35,8 +36,10 @@ for i = 1:(length(horizontalCrops))
         crop = imcrop(img, [horizontalCrops(i),verticalCrops(j), frameWidth-1, frameHeight-1]);
         
         h = imhist(crop);        
-        bmin = min(h);
-        bmax = max(h);
+        space = levels(h ~= 0);
+        
+        bmin = min(space);
+        bmax = max(space);
         
         map = he(crop,h);
         
@@ -47,8 +50,8 @@ for i = 1:(length(horizontalCrops))
         map = (map - bHmin) * remapFactor + bmin;
         
         inbound = map >= bmin & map <= bmax;
-        newMapDen(inbound) = newMapDen(inbound) + map(inbound);
-        newMapNum(inbound) = newMapNum(inbound) + 1;
+        newMapNum(inbound) = newMapNum(inbound) + map(inbound);
+        newMapDen(inbound) = newMapDen(inbound) + 1;
         
         maps(:,k) = map;
         crops{i,j} = crop;
@@ -56,8 +59,8 @@ for i = 1:(length(horizontalCrops))
     end
 end
 
-newMapNum(newMapNum == 0) = 1;
-map = round(newMapDen./newMapNum);
+newMapDen(newMapDen == 0) = 1;
+map = round(newMapNum./newMapDen);
 img3 = applyMap(img,map);
 
     
