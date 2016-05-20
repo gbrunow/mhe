@@ -1,4 +1,6 @@
-img = imread('Cameraman256.png');
+[file,path] = uigetfile('*.bmp;*.png','Selecione uma imagem');
+img = imread([path file]);
+% img = imread('Cameraman256.png');
 % img = imread('imagemClara.bmp');
 % img = rgb2gray(img);
 
