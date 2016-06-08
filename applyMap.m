@@ -1,7 +1,8 @@
-function [ img ] = applyMap( img, map )
+function [ outimg ] = applyMap( img, map )
     L = length(imhist(img));
+    outimg = img;
     for i = 1:L
-        img(img == (i-1)) = map(i);
+        outimg(img == (i-1)) = map(i);
     end
 end
 

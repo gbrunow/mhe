@@ -1,15 +1,17 @@
 [file,path] = uigetfile('*.bmp;*.png','Selecione uma imagem');
 img = imread([path file]);
-% img = imread('Cameraman256.png');
-% img = imread('imagemClara.bmp');
-% img = rgb2gray(img);
+squaredImg1 = img;
+squaredImg2 = img;
 
+figure(1);
 subplot(2,3,1);
 imshow(img);
 title('Original');
 
+whiter = false;
+
 subplot(2,3,2);
-map = he(img);
+map = he(img, whiter);
 img2 = applyMap(img, map);
 imshow(img2);
 title('HE');
@@ -24,45 +26,66 @@ verticalCrops = 1:frameHeight:height;
 initialHistogram = imhist(img);
 L = length(initialHistogram);
 
-crops = cell(length(horizontalCrops), length(verticalCrops));
 maps = zeros(L, length(horizontalCrops)*length(verticalCrops));
 newMapNum = zeros(L,1);
 newMapDen = zeros(L,1);
-levels = 1:L;
+levels = 0:(L-1);
 
 k = 1;
+
 for i = 1:(length(horizontalCrops))
     for j = 1:(length(verticalCrops))
         crop = imcrop(img, [horizontalCrops(i),verticalCrops(j), frameWidth-1, frameHeight-1]);
         
-        h = imhist(crop);        
+        h = imhist(crop);
+        occurred = levels(h > 0);
         space = levels(h ~= 0);
         
-        bmin = min(space);
-        bmax = max(space);
+        bmin = space(1);
+        bmax = space(end);
         
-        map = he(crop,h);
+        map = he(h, whiter);
+        
+        if i < length(horizontalCrops)
+            y = horizontalCrops(i):(horizontalCrops(i+1)-1);
+        else
+            y = horizontalCrops(end):width;
+        end
+        
+        if j < length(verticalCrops)
+            x = verticalCrops(j):(verticalCrops(j+1)-1);
+        else
+            x = verticalCrops(end):height;
+        end
+        
+        squaredImg1(x,y) = applyMap(crop,map);        
+        
+        occurred = map(occurred);
         
         bHmin = min(map);
         bHmax = max(map);
         remapFactor = (bmax - bmin)/(bHmax - bHmin); 
         
-        map = (map - bHmin) * remapFactor + bmin;
-        
         inbound = map >= bmin & map <= bmax;
+
+        map = round((map - bHmin) * remapFactor + bmin);
+
+        squaredImg2(x,y) = applyMap(crop,map);
+
         newMapNum(inbound) = newMapNum(inbound) + map(inbound);
         newMapDen(inbound) = newMapDen(inbound) + 1;
         
         maps(:,k) = map;
-        crops{i,j} = crop;
         k = k + 1;
     end
 end
 
+figure(1);
+
 newMapDen(newMapDen == 0) = 1;
 map = round(newMapNum./newMapDen);
-img3 = applyMap(img,map);
 
+img3 = applyMap(img,map);
     
 subplot(2,3,3);
 imshow(img3);
@@ -76,14 +99,14 @@ imhist(img2);
 
 subplot(2,3,6)
 imhist(img3);
-% hold on;
 
-% for i = 1:length(horizontalCrops)
-%     for j = 1:length(verticalCrops)
-%         plot(horizontalCrops(i),verticalCrops(j), 'g.');
-%     end
-% end
+figure(2);
+subplot(1,2,1)
+imshow(squaredImg1);
+title('Sem Remapping');
 
-% hold off;
+subplot(1,2,2)
+imshow(squaredImg2);
+title('Com Remapping');
 
 shg;
