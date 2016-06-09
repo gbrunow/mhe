@@ -1,12 +1,13 @@
 function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles )
     
     img = imread([path file]);
-    imgOrig = img;
     
     try
         img = rgb2gray(img);
     catch e
     end
+    
+    imgOrig = img;
 
     cols = 1;
     
