@@ -1,21 +1,29 @@
 function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles )
     
     img = imread([path file]);
+    imgOrig = img;
+    
     try
         img = rgb2gray(img);
     catch e
     end
 
     cols = 1;
+    
+    if whiter
+        h = imhist(img);
+        L = length(h);
+        img = L - img;
+    end
 
     if genMHE
         cols = cols + 1;
-        imgMHE = mhe(img, whiter);
+        imgMHE = mhe(img);
     end
 
     if genHE
         cols = cols + 1;
-        imgHE = he(img, whiter);
+        imgHE = he(img);
     end
 
     splot = 1;
@@ -23,17 +31,20 @@ function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles 
         figure;
 
         subplot(2,cols,splot);
-        imshow(img);
+        imshow(imgOrig);
         title('Original');
 
         subplot(2,cols,splot+cols)
-        imhist(img);
+        imhist(imgOrig);
 
         if genHE
             splot = splot + 1;
             subplot(2,cols,splot);
-            map = he(img, whiter);
+            map = he(img);
             imgHE = applyMap(img, map);
+            if whiter
+                imgHE = L - imgHE;
+            end
             imshow(imgHE);
             title('HE');
 
@@ -44,6 +55,9 @@ function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles 
         if genMHE
             splot = splot + 1;
             subplot(2,cols,splot);
+            if whiter
+                imgMHE = L - imgMHE;
+            end
             imshow(imgMHE);
             title('MHE');
 

@@ -1,4 +1,4 @@
-function [ imgMHE ] = mhe( img, whiter, frameHeight, frameWidth )
+function [ imgMHE ] = mhe( img, frameHeight, frameWidth )
     if nargin < 4
         frameHeight = 32;
         frameWidth = 32;
@@ -28,7 +28,7 @@ function [ imgMHE ] = mhe( img, whiter, frameHeight, frameWidth )
             bmin = space(1);
             bmax = space(end);
 
-            map = he(h, whiter);
+            map = he(h);
 
             inbound = map >= bmin & map <= bmax;     
 

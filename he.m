@@ -1,4 +1,4 @@
-function [ map ] = he(input, whiter)
+function [ map ] = he(input)
 
     if isvector(input)
         h = input;
@@ -7,19 +7,12 @@ function [ map ] = he(input, whiter)
     end
     if nargin < 2
         whiter = false;
-    end
-    
-    if whiter
-        direction = 'reverse';
-    else
-        direction = 'forward';
-    end
-    
+    end    
     
     L = length(h);
     numberOfPixels = sum(h);
     probabilities = h/numberOfPixels;
-    sk = cumsum(probabilities, direction);
+    sk = cumsum(probabilities);
 
     map = floor((L-1)*sk);
 end
