@@ -47,8 +47,10 @@ function [ imgMHE ] = mhe( img, frameHeight, frameWidth )
         end
     end
 
-    newMapDen(newMapDen == 0) = 1;
+    keep = newMapDen == 0;
+    newMapDen(keep) = 1;
     map = round(newMapNum./newMapDen);
+    map(keep) = levels(keep);
 
     imgMHE = applyMap(img,map);
 end
