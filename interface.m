@@ -22,7 +22,7 @@ function varargout = interface(varargin)
 
 % Edit the above text to modify the response to help interface
 
-% Last Modified by GUIDE v2.5 08-Jun-2016 02:11:34
+% Last Modified by GUIDE v2.5 14-Jun-2016 09:06:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -122,7 +122,8 @@ function pushbuttonRun_Callback(hObject, eventdata, handles)
         genHE = handles.checkboxHE.Value;
         genMHE = handles.checkboxMHE.Value;
         genFiles = handles.checkboxFiles.Value;
-        run( file, path, whiter, compare, genHE, genMHE, genFiles );
+        medianFilter = handles.checkboxMediana.Value;
+        run( file, path, whiter, compare, genHE, genMHE, genFiles, medianFilter );
     end
 
 
@@ -175,3 +176,12 @@ function checkboxFiles_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxFiles
+
+
+% --- Executes on button press in checkboxMediana.
+function checkboxMediana_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxMediana (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxMediana

@@ -1,6 +1,10 @@
-function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles )
+function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles, medianFilter )
     
     img = imread([path file]);
+    
+    if medianFilter
+        img = medfilt2(img);
+    end
     
     try
         img = rgb2gray(img);
@@ -83,4 +87,3 @@ function [ output ] = run( file, path, whiter, compare, genHE, genMHE, genFiles 
         end
     end
 end
-
